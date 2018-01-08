@@ -1,0 +1,10 @@
+records:
+  - type: A
+    name: '@'
+    data: 8.8.8.8
+  - type: CNAME
+    name: test
+    data: test.diff2.com.
+  - type: CNAME
+    name: test2
+    data: test2.diff2.com.
