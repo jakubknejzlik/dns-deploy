@@ -3,6 +3,8 @@ package cmd
 import (
 	"fmt"
 	"io/ioutil"
+	"path"
+	"strings"
 
 	"github.com/ghodss/yaml"
 	"github.com/jakubknejzlik/dns-deploy/model"
@@ -66,7 +68,7 @@ func run(provider providers.DNSProvider) error {
 		return err
 	}
 	for _, info := range dir {
-		if !info.IsDir() {
+		if !info.IsDir() && !strings.HasPrefix(path.Base(info.Name()), ".") {
 			zone, err := model.NewDomainZoneFromFile(info.Name())
 			if err != nil {
 				return err
