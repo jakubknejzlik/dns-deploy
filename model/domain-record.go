@@ -15,11 +15,14 @@ type DomainRecord struct {
 	Tag      string `json:"tag,omitempty",yaml:"tag,omitempty"`
 }
 
+func (d *DomainRecord) ToString() string {
+	return fmt.Sprintf("%s %s (%i)", d.Name, d.Type, d.TTL)
+}
+
 func (d *DomainRecord) isTypeNameEqual(to DomainRecord) bool {
 	return d.Type == to.Type && d.Name == to.Name
 }
 
 func (d *DomainRecord) isEqual(to DomainRecord) bool {
-	fmt.Println(d.Name, to.Name, "...", d.Priority == to.Priority, d.Port == to.Port, d.TTL, "==", to.TTL, d.Weight == to.Weight, d.Flags == to.Flags, d.Tag == to.Tag)
 	return d.Type == to.Type && d.Name == to.Name && d.Data == to.Data && d.Priority == to.Priority && d.Port == to.Port && d.TTL == to.TTL && d.Weight == to.Weight && d.Flags == to.Flags && d.Tag == to.Tag
 }

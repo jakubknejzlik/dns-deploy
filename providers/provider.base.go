@@ -40,7 +40,7 @@ func GetProvider(code, token string) (DNSProvider, error) {
 		return provider, fmt.Errorf("Unknown provider with code %s (known: %s)", code, strings.Join(keys, ", "))
 	}
 
-	return fn(code), nil
+	return fn(token), nil
 }
 
 // TokenSource ...

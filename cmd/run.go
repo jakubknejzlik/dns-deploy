@@ -1,12 +1,12 @@
 package cmd
 
 import (
-	"fmt"
 	"io/ioutil"
 	"path"
 	"strings"
 
 	"github.com/ghodss/yaml"
+	"github.com/inloop/goclitools"
 	"github.com/jakubknejzlik/dns-deploy/model"
 	"github.com/jakubknejzlik/dns-deploy/providers"
 	"github.com/urfave/cli"
@@ -61,8 +61,6 @@ func run(provider providers.DNSProvider) error {
 		currentDomainsMap[d.Name] = d
 	}
 
-	fmt.Println("current domains", currentDomains)
-
 	dir, err := ioutil.ReadDir(".")
 	if err != nil {
 		return err
@@ -73,7 +71,9 @@ func run(provider providers.DNSProvider) error {
 			if err != nil {
 				return err
 			}
+			goclitools.LogSection(zone.Domain.Name)
 			if currentDomainsMap[zone.Domain.Name].Name == "" {
+				goclitools.Log("creating domain", zone.Domain.Name)
 				provider.CreateDomain(zone.Domain.Name)
 			}
 			if err := updateDomainZone(provider, zone); err != nil {
@@ -95,33 +95,6 @@ func getDomainZone(provider providers.DNSProvider, domain string) (model.DomainZ
 	zone.Records = records
 
 	return zone, nil
-
-	// records := provider
-	// zone := model.DomainZone{}
-
-	// opts := &godo.ListOptions{PerPage: 999}
-	// records, _, err := p.client.Domains.Records(context.Background(), domain, opts)
-	// if err != nil {
-	// 	return zone, err
-	// }
-
-	// for _, record := range records {
-	// 	rec := model.DomainRecord{
-	// 		ID:       string(record.ID),
-	// 		Type:     record.Type,
-	// 		Name:     record.Name,
-	// 		Data:     record.Data,
-	// 		Priority: record.Priority,
-	// 		Port:     record.Port,
-	// 		TTL:      record.TTL,
-	// 		Weight:   record.Weight,
-	// 		Flags:    record.Flags,
-	// 		Tag:      record.Tag,
-	// 	}
-	// 	zone.Records = append(zone.Records, rec)
-	// }
-
-	// return zone, nil
 }
 
 func updateDomainZone(provider providers.DNSProvider, zone model.DomainZone) error {
@@ -129,10 +102,9 @@ func updateDomainZone(provider providers.DNSProvider, zone model.DomainZone) err
 	if err != nil {
 		return err
 	}
-	fmt.Println("Updating zone", zone.Domain.Name)
 	diff := model.CreateDomainZoneDiff(remoteZone, zone)
 	yml, _ := yaml.Marshal(diff)
-	fmt.Println("diff", string(yml))
+	goclitools.LogSection("Diff", string(yml))
 
 	return applyDomainZoneDiff(provider, zone.Domain.Name, diff)
 }
@@ -140,20 +112,25 @@ func updateDomainZone(provider providers.DNSProvider, zone model.DomainZone) err
 func applyDomainZoneDiff(p providers.DNSProvider, domain string, diff model.DomainZoneDiff) error {
 
 	for _, record := range diff.AddRecords {
+		goclitools.Log("adding record", record.ToString())
 		if err := p.CreateDomainRecord(domain, record); err != nil {
 			return err
 		}
 	}
 	for _, record := range diff.UpdateRecords {
+		goclitools.Log("updating record", record.ToString())
 		if err := p.UpdateDomainRecord(domain, record); err != nil {
 			return err
 		}
 	}
 	for _, record := range diff.DeleteRecords {
+		goclitools.Log("deleting record", record.ToString())
 		if err := p.DeleteDomainRecord(domain, record.ID); err != nil {
 			return err
 		}
 	}
+
+	goclitools.Log("domain updated")
 
 	return nil
 }
