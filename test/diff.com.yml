@@ -4,7 +4,8 @@ records:
     data: 8.8.8.8
   - type: CNAME
     name: test
-    data: test.diff2.com.
+    data: test2.diff2.com.
+    ttl: 300
   - type: CNAME
     name: test2
     data: test2.diff2.com.

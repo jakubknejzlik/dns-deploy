@@ -30,7 +30,7 @@ func TestCreateDomainZoneDiff(t *testing.T) {
 
 	expectedDiff := DomainZoneDiff{
 		KeepRecords:   []DomainRecord{DomainRecord{Name: "test2", Type: "CNAME", Data: "test2.diff2.com."}},
-		UpdateRecords: []DomainRecord{DomainRecord{Name: "test", Type: "CNAME", Data: "test.diff2.com."}},
+		UpdateRecords: []DomainRecord{DomainRecord{Name: "test", Type: "CNAME", Data: "test2.diff2.com.", TTL: 301}},
 		AddRecords:    []DomainRecord{DomainRecord{Name: "@", Type: "AAAA", Data: "8.8.8.8"}},
 		DeleteRecords: []DomainRecord{DomainRecord{Name: "@", Type: "A", Data: "8.8.8.8"}},
 	}

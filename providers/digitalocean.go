@@ -100,12 +100,17 @@ func (p DigitalOceanProvider) ListDomainRecords(domain string) ([]model.DomainRe
 	return records, nil
 }
 
-func (p DigitalOceanProvider) CreateDomainRecord(domain string, record model.DomainRecord) error {
+func createEditRequest(record model.DomainRecord) *godo.DomainRecordEditRequest {
+	data := record.Data
 
-	req := &godo.DomainRecordEditRequest{
+	if record.Type == "CNAME" {
+		data += "."
+	}
+
+	return &godo.DomainRecordEditRequest{
 		Type:     record.Type,
 		Name:     record.Name,
-		Data:     record.Data,
+		Data:     data,
 		Priority: record.Priority,
 		Port:     record.Port,
 		TTL:      record.TTL,
@@ -113,6 +118,10 @@ func (p DigitalOceanProvider) CreateDomainRecord(domain string, record model.Dom
 		Flags:    record.Flags,
 		Tag:      record.Tag,
 	}
+
+}
+func (p DigitalOceanProvider) CreateDomainRecord(domain string, record model.DomainRecord) error {
+	req := createEditRequest(record)
 	_, _, err := p.client.Domains.CreateRecord(context.Background(), domain, req)
 	return err
 }
@@ -122,17 +131,7 @@ func (p DigitalOceanProvider) UpdateDomainRecord(domain string, record model.Dom
 	if err != nil {
 		return err
 	}
-	req := &godo.DomainRecordEditRequest{
-		Type:     record.Type,
-		Name:     record.Name,
-		Data:     record.Data,
-		Priority: record.Priority,
-		Port:     record.Port,
-		TTL:      record.TTL,
-		Weight:   record.Weight,
-		Flags:    record.Flags,
-		Tag:      record.Tag,
-	}
+	req := createEditRequest(record)
 	_, _, err = p.client.Domains.EditRecord(context.Background(), domain, int(recordID), req)
 	return err
 }

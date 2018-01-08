@@ -5,6 +5,7 @@ records:
   - type: CNAME
     name: test
     data: test2.diff2.com.
+    ttl: 301
   - type: CNAME
     name: test2
     data: test2.diff2.com.

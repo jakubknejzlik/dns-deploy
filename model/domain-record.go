@@ -20,9 +20,11 @@ func (d *DomainRecord) ToString() string {
 }
 
 func (d *DomainRecord) isTypeNameEqual(to DomainRecord) bool {
-	return d.Type == to.Type && d.Name == to.Name
+	// fmt.Println("compare??", d.Type == to.Type && d.Name == to.Name && d.Data == to.Data, d, to)
+	return d.Type == to.Type && d.Name == to.Name && d.Data == to.Data
 }
 
 func (d *DomainRecord) isEqual(to DomainRecord) bool {
+	// fmt.Println("compare", d.Type == to.Type && d.Name == to.Name && d.Data == to.Data && d.Priority == to.Priority && d.Port == to.Port && d.TTL == to.TTL && d.Weight == to.Weight && d.Flags == to.Flags && d.Tag == to.Tag, d, "=>", to)
 	return d.Type == to.Type && d.Name == to.Name && d.Data == to.Data && d.Priority == to.Priority && d.Port == to.Port && d.TTL == to.TTL && d.Weight == to.Weight && d.Flags == to.Flags && d.Tag == to.Tag
 }
