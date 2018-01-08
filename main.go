@@ -14,7 +14,7 @@ func main() {
 	app.Version = "0.0.1"
 
 	app.Commands = []cli.Command{
-		cmd.DeployCommand(),
+		cmd.RunCommand(),
 	}
 
 	app.Run(os.Args)

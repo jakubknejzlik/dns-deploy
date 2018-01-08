@@ -14,7 +14,7 @@ type DigitalOceanProvider struct {
 	client *godo.Client
 }
 
-func NewDigitalOceanClient(token string) (DigitalOceanProvider, error) {
+func NewDigitalOceanClient(token string) DNSProvider {
 	tokenSource := &TokenSource{
 		AccessToken: token,
 	}
@@ -22,7 +22,7 @@ func NewDigitalOceanClient(token string) (DigitalOceanProvider, error) {
 	oauthClient := oauth2.NewClient(context.Background(), tokenSource)
 	client := godo.NewClient(oauthClient)
 
-	return DigitalOceanProvider{client}, nil
+	return DigitalOceanProvider{client}
 }
 
 func (p DigitalOceanProvider) ListDomains() ([]model.Domain, error) {

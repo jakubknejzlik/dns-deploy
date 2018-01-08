@@ -11,9 +11,9 @@ import (
 )
 
 // DeployCommand ...
-func DeployCommand() cli.Command {
+func RunCommand() cli.Command {
 	return cli.Command{
-		Name: "deploy",
+		Name: "run",
 		Flags: []cli.Flag{
 			cli.StringFlag{
 				Name:   "provider",
@@ -41,7 +41,7 @@ func DeployCommand() cli.Command {
 				return cli.NewExitError(err, 1)
 			}
 
-			if err := deploy(provider); err != nil {
+			if err := run(provider); err != nil {
 				return cli.NewExitError(err, 1)
 			}
 			return nil
@@ -49,7 +49,7 @@ func DeployCommand() cli.Command {
 	}
 }
 
-func deploy(provider providers.DNSProvider) error {
+func run(provider providers.DNSProvider) error {
 	currentDomains, err := provider.ListDomains()
 	if err != nil {
 		return err

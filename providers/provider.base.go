@@ -1,6 +1,9 @@
 package providers
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/jakubknejzlik/dns-deploy/model"
 	"golang.org/x/oauth2"
 )
@@ -22,7 +25,22 @@ type DNSProvider interface {
 }
 
 func GetProvider(code, token string) (DNSProvider, error) {
-	return NewDigitalOceanClient(token)
+	providersMap := map[string](func(string) DNSProvider){
+		"digitalocean": NewDigitalOceanClient,
+	}
+
+	var provider DNSProvider
+
+	fn := providersMap[code]
+	if fn == nil {
+		keys := []string{}
+		for k := range providersMap {
+			keys = append(keys, k)
+		}
+		return provider, fmt.Errorf("Unknown provider with code %s (known: %s)", code, strings.Join(keys, ", "))
+	}
+
+	return fn(code), nil
 }
 
 // TokenSource ...
