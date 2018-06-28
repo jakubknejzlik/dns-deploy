@@ -111,6 +111,12 @@ func updateDomainZone(provider providers.DNSProvider, zone model.DomainZone) err
 
 func applyDomainZoneDiff(p providers.DNSProvider, domain string, diff model.DomainZoneDiff) error {
 
+	for _, record := range diff.DeleteRecords {
+		goclitools.Log("deleting record", record.ToString())
+		if err := p.DeleteDomainRecord(domain, record.ID); err != nil {
+			return err
+		}
+	}
 	for _, record := range diff.AddRecords {
 		goclitools.Log("adding record", record.ToString())
 		if err := p.CreateDomainRecord(domain, record); err != nil {
@@ -120,12 +126,6 @@ func applyDomainZoneDiff(p providers.DNSProvider, domain string, diff model.Doma
 	for _, record := range diff.UpdateRecords {
 		goclitools.Log("updating record", record.ToString())
 		if err := p.UpdateDomainRecord(domain, record); err != nil {
-			return err
-		}
-	}
-	for _, record := range diff.DeleteRecords {
-		goclitools.Log("deleting record", record.ToString())
-		if err := p.DeleteDomainRecord(domain, record.ID); err != nil {
 			return err
 		}
 	}
