@@ -16,7 +16,7 @@ type DomainRecord struct {
 }
 
 func (d *DomainRecord) ToString() string {
-	return fmt.Sprintf("%s %s (%i)", d.Name, d.Type, d.TTL)
+	return fmt.Sprintf("%s %s (%d)", d.Name, d.Type, d.TTL)
 }
 
 func (d *DomainRecord) isTypeNameEqual(to DomainRecord) bool {
