@@ -127,7 +127,7 @@ func (p DigitalOceanProvider) CreateDomainRecord(domain string, record model.Dom
 }
 
 func (p DigitalOceanProvider) UpdateDomainRecord(domain string, record model.DomainRecord) error {
-	recordID, err := strconv.ParseInt(record.ID, 10, 32)
+	recordID, err := strconv.ParseInt(record.ID, 10, 64)
 	if err != nil {
 		return err
 	}
@@ -137,7 +137,7 @@ func (p DigitalOceanProvider) UpdateDomainRecord(domain string, record model.Dom
 }
 
 func (p DigitalOceanProvider) DeleteDomainRecord(domain string, recordID string) error {
-	id, err := strconv.ParseInt(recordID, 10, 12)
+	id, err := strconv.ParseInt(recordID, 10, 64)
 	if err != nil {
 		return err
 	}
